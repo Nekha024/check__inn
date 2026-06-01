@@ -45,7 +45,7 @@ NOTIFICATION_TYPE=(
 
 
 class Hotel(models.Model):
-    user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
+    user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True,blank=True)
     name = models.CharField(max_length=100)
     description = CKEditor5Field(null=True,blank=True, config_name='extends')
     image = models.FileField(upload_to='hotel_galley')
