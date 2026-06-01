@@ -1,0 +1,161 @@
+{% extends "base/base.html" %} {% block content %}
+{% load static%}
+<div class="container text-center mt-5 pt-3">
+  <h2>All Available Rooms</h2>
+  <small>The {{room_type.type}}room has {{rooms.count}} availabe room(s)</small>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 col-12">
+      <div class="container m-0 p-0">
+        <div class="row d-flex justify-content-center ">
+          {% for r in rooms %}
+
+          <div class="col-4  border mt-5 mb-3  px-0">
+            <div class="col-12 text-center nav_btn py-5 my-0">
+              <h3>Room No.{{r.room_number}}</h3>
+              <h5 class="d-inline">{{r.room_type.price}}$</h5>
+              <small>/per Night</small>
+            </div>
+            <div class="col-12 text-center mt-5">
+              <p>Bed:{{r.room_type.number_of_beds}}</p>
+              <hr />
+              <p>Room capacity:{{r.room_type.room_capacity}}</p>
+              <hr />
+
+
+              <div>
+
+              <input type="text" class="room_id_{{r.id}} form-control" value="{{r.id}}" id='room_id' >
+              <input type="text" class="room_number_{{r.id}} form-control" value="{{r.room_number}}" id="room_number">
+              </div>
+
+
+              <button class="btn nav_btn mb-4 mt-3 add-to-selection" data-index="{{r.id}}">
+                add To <br />
+                Selection
+              </button>
+            </div>
+          </div>
+
+          {% endfor %}
+
+          <input class="form-control" type="text" value="{{hotel.id}}" id="id">
+          <input class="form-control" type="text" value="{{hotel.name}}" id="hotel_name">
+          <input class="form-control" type="text" value="{{room_type.type}}" id="room_name">
+          <input class="form-control" type="text" value="{{room_type.price}}" id="room_price">
+          <input class="form-control" type="text" value="{{room_type.number_of_beds}}" id="number_of_beds">
+          <input class="form-control" type="text" value="{{room_type.id}}" id="room_type">
+          <input class="form-control" type="text" value="{{checkin}}" id="checkin">
+          <input class="form-control" type="text" value="{{checkout}}" id="checkout">
+          <input class="form-control" type="text" value="{{adult}}" id="adult">
+          <input class="form-control" type="text" value="{{children}}" id="children">
+
+
+
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 col-12">
+      <div class="box-r my-3">
+        <h5>
+          <i class="fa-regular fa-calendar-days calender mr-2"></i
+          ><b>Booking</b>
+        </h5>
+        <hr />
+        <form class="" method="POST" action="{% url 'booking:check_room_availability' %}">
+          {% csrf_token %}
+
+          <!-- hotel_id -->
+          <input type="hidden" id="" name="hotel-id" value="{{hotel.id}}">
+        <label for="">Check-in date</label>
+        <input type="date" name="checkin" class="form-control" >
+        <label for="">Check-out Date</label>
+        <input type="date" class="form-control" name="checkout" >
+        <h6>Guests</h6>
+       
+        <label for="" class="text-center">Adults
+
+
+
+        <div class="input-group inline-group ">
+          <div class="input-group-prepend">
+            <span class="btn btn-outline-secondary btn-minus">
+              <i class="fa fa-minus"></i>
+            </span>
+          </div>
+          <input class="form-control quantity" min="0" name="adult" value="1" type="number">
+          <div class="input-group-append">
+            <span class="btn btn-outline-secondary btn-plus">
+              <i class="fa fa-plus"></i>
+            </span>
+          </div>
+        </div>
+      </label>
+    
+
+
+   
+      <label for="" class="text-center">Children
+
+
+
+      <div class="input-group inline-group  ">
+        <div class="input-group-prepend">
+          <span class="btn btn-outline-secondary btn-minus">
+            <i class="fa fa-minus"></i>
+          </span>
+        </div>
+        <input class="form-control quantity" min="0" name="children" value="1" type="number">
+        <div class="input-group-append">
+          <span class="btn btn-outline-secondary btn-plus">
+            <i class="fa fa-plus"></i>
+          </span>
+        </div>
+      </div></label>
+    
+  <br>
+
+        <label for="">Select Room Typle</label>
+        <br>
+        <div class="select is-multiple">
+        <select class="form-control" name='room_type' aria-label=".form-select-lg example">
+          {% for r  in hotel.hotel_room_types  %}
+          <option value='{{r.slug}}'>{{r.type}}</option>
+          {% endfor %}
+        </select>
+        <br></div>
+        <button class="btn nav_btn btn-block my-2">Check Availability</button>
+        <div class="text-center">
+
+        <button class="btn btn-wish text-enter"><i class="fa-regular fa-heart  fa-md px-2 "></i>Add to Wishlist</button>
+         </div>
+
+        </form>
+
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'scripts/custom.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+ $('.btn-plus, .btn-minus').on('click', function(e) {
+ const isNegative = $(e.target).closest('.btn-minus').is('.btn-minus');
+ const input = $(e.target).closest('.input-group').find('input');
+ if (input.is('input')) {
+   input[0][isNegative ? 'stepDown' : 'stepUp']()
+ }
+})
+</script>
+{% endblock script %}

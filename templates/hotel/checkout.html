@@ -1,0 +1,247 @@
+{% load static %}
+{% include "base/base.html" %}
+
+{% block content %}
+
+<section>
+
+</section>
+
+<section>
+    <div class="container-fluid mt-5 baseContainer">
+        <div class="row">
+            <div class="col-12 col-md-8 mb-4 ">
+                <div class="container border p-4">
+                    <h4><i class="fa-solid fa-bed  calender small m" ></i>&nbsp;Selected Rooms</h4>
+                    <hr>
+                    {% for r in booking.room.all  %}
+                    <div class="container-fluid">
+                        
+                        <div class="row">
+                            <div class="col-9">
+                                <h5>Room: {{r.room_type.type}} <a style="cursor: pointer" class="delete-item ml-5 " data-item="{{id}}"><i class="fa-solid fa-trash text-danger"></i></a> </h5>
+                              <small>Beds:{{r.room_type.number_of_beds}}</small> <br>
+                              <small>Room Number:{{r.room_number}}</small>
+                            </div>
+                            <div class="col-3">
+                                <button class="btn border">${{r.room_type.price}}</button>
+                            </div>
+                              
+                        </div>
+                    </div>
+                    <hr>
+                    {% endfor %}
+                   
+                </div>
+                <div class="container border mt-5 p-4 ">
+                    <h4 class="mt-4"><i class="fa-solid fa-user calender mr-2"></i> Billing Information</h4>
+                    <hr>
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <label for="First Name">First Name</label>
+                        <input type="text" placeholder="First Name" name="full_name" class="form-control" value='{{booking.full_name}}' style='background: rgb(227,227,227)'>
+                        <div class="row my-3">
+                            <div class="col">
+                                <label for="e-mail">E-Mail</label>
+                              <input name="email" type="text" class="form-control" placeholder="First name" value='{{booking.email}}' style='background: rgb(227,227,227)'>
+                            </div>
+                            <div class="col">
+                                <label for="Phone">Phone</label>
+                              <input name="phone" type="text" class="form-control" placeholder="Phone no" value='{{booking.phone}}' style='background: rgb(227,227,227)'>
+                            </div>
+                          </div>
+                          <button class="btn nav_btn mb-3">Continue to checkout</button>
+                    </form>
+                    
+
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="container">
+                    <div class="row imgss pt-5" style="background-image: url('{{booking.hotel.image.url}}');">
+
+                        <div class="card-data text-left text-light mt-5 pt-5">
+                            <h4>{{booking.hotel.name}}</h4>
+                            <small><i class="fa-solid fa-location-dot colo pr-2"></i>&nbsp;&nbsp;{{booking.hotel.address}}</small>
+                            <br>
+                            <small><i class="fa-solid fa-phone colo pr-2 mr-1"></i>{{booking.hotel.mobile}}</small>
+                          <div class="d-flex justify-content-between ">
+                            <div class="ratings pl-4 pr-0">
+                                <i class="fa fa-star rating-color"></i>
+                                <i class="fa fa-star rating-color"></i>
+                                <i class="fa fa-star rating-color"></i>
+                                <i class="fa fa-star rating-color"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                           
+                           </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row border">
+                        <h5 class="mt-4"><i class="fa-regular fa-calendar-days calender mr-2"></i>&nbsp;&nbsp;Booking Summary</h5>
+                        
+                        <div class="container-fluid">
+                             <div class="row"><hr>
+                                <div class="col-6">
+                                    <p>Check-in</p>
+                                    <p>Check-Out</p>
+                                    <p>Total Days</P>
+                                    
+                                    <p>Adults</p>
+                                    <p>Children</p>
+                                    <p>Discount</p>
+                                   
+                                </div>
+                                <div class="col-6">
+                                    <p>{{booking.check_in_date}}</p>
+                                    <p>{{booking.check_out_date}}</p>
+                                    <P>{{booking.total_days}}Days</p>
+                                    
+                                    <p>{{booking.num_adults}} Adult</p>
+                                    <p>{{booking.num_children}} Children</p>
+                                    <p>-$ {{booking.saved}} </p>
+                                   
+                                </div>
+                             </div>
+                             <hr>
+                             
+                                <div class="container-fluid">
+                                    <div class="row">
+                                    <form  method="post">
+                                            {% csrf_token %}
+                                    
+                                       
+                                        <div class="col-8 m-0 p-0 ">
+                                            <input type="text" class="form-control m-0 p-0 " id="coupenCode" name="code" placeholder=" Enter Your coupon Code">
+                              
+                                        </div>
+                                        <div class="col-4 8 m-0 p-0 ">
+                                            <button type="submit" class="btn btn-primary ">Apply</button>
+
+                                        </div>
+                                    </form>
+                                    
+                                    </div>
+                                </div>
+   
+                                
+                            
+
+                              <hr>
+
+                             <div class="row py-3">
+                                <div class="col-6"><h5>Total Cost</h5></div>
+                                <div class="col-6"><h5 class="colo">${{booking.total}}</h5></div>
+                             </div>
+                             <div id="paypal-button-container"></div>
+
+                             <div class="container text-center">
+                                <button style="background-color: rgb(193, 193, 21);" class="btn text-light btn-block"><strong class="mb-2 pt-0 mt-0">Pay with </strong><i class="fa-brands fa-2x fa-google-pay  ml-3"></i></button>
+                                <button id="checkout-button"  class="btn nav_btn btn-block">Pay with striper <i class="fa-solid fa-credit-card my-2"></i> </button>
+
+                             </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}
+
+
+{% block script %}
+<script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+<script src="https://js.stripe.com/v3/"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'scripts/custom.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let booking_total="{{booking.total}}"
+    let booking_id = "{{booking.booking_id}}"
+    let success_id = "{{booking.success_id}}"
+    paypal.Buttons({
+        createOrder: function(date, actions){
+            return actions.order.create({
+               purchase_units: [{
+                amount:{
+                    value: booking_total                    
+                }
+               }]
+            })
+        },
+        anApprove: function(data,actions){
+            return actions.order.capture().then(function(Detail){
+                console.log(Detail);
+                if (Detail.status == "COMPLETED"){
+                    // REDIRECT TO THE success page
+                    window.location.href = `/success/${booking_id}/?success_id=${success_id}&payer_id=${Detail.id}&status=${Detail.status}&booking_total=${booking_total}`
+                }
+            });
+        },
+    })
+    .render("#paypal-button-container")
+</script>
+
+
+<script>
+    var stripe = Stripe('{{stripe_publishable_key}}')
+    var checkoutButton = document.getElementById("checkout-button")
+
+    checkoutButton.addEventListener('click',function(){
+        var email ="{{booking.email}}"
+
+        checkoutButton.innerHTML = "Processing <i class='fas fa-spinner fa-spin'></i>"
+
+        fetch('/api/create_checkout_session/{{booking.booking_id}}',{
+                method:"POST",
+                body:JSON.stringify(
+                    {email:email}
+                )
+            }).then(function(response){
+                console.log(response)
+                return response.json()
+            })
+            .then(function(session){
+                return stripe.redirectToCheckout({sessionId:session.sessionId})
+            }).then(function(result){
+                if(result.error){
+                    alert(result.error.message)
+                }
+            })
+            .catch(function(error){
+                console.log("Error: ",error)
+
+            })
+
+
+
+        console.log(email)
+        console.log(stripe)
+    })
+</script>
+{% endblock script %}
