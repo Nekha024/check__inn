@@ -9,18 +9,39 @@ from django.urls import reverse
 from django.http import JsonResponse
 from decimal import Decimal
 from django.utils import timezone
+from django.db.models import Q
 
 
 
 # Create your views here.
 
 
+
 def index(request):
-    hotels=Hotel.objects.filter(status='Live')
-    context={
-        'hotels':hotels
+    hotels = Hotel.objects.filter(status='Live')
+
+    query = request.GET.get('q')
+    category = request.GET.get('category')
+
+    if query:
+        hotels = hotels.filter(
+            Q(name__icontains=query) |
+            Q(address__icontains=query) |
+            Q(mobile__icontains=query)
+        )
+
+    if category:
+        hotels = hotels.filter(
+            tag__name__icontains=category
+        )
+
+    hotels = hotels.distinct()
+
+    context = {
+        'hotels': hotels
     }
-    return render(request,'hotel/hotel.html',context)
+
+    return render(request, 'hotel/hotel.html', context)
 
 
 def hotel_detail(request,slug):

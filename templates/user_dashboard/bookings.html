@@ -1,131 +1,322 @@
-{% load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>All Bookings</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/df8ea3872c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Boxicons CSS -->
-<link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+        
+        :root {
+            --header-height: 3.5rem;
+            --nav-width: 68px;
+            --bg-slate: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --body-font: 'Inter', sans-serif;
+            --z-fixed: 100;
+        }
+        
+        body {
+            position: relative;
+            margin: var(--header-height) 0 0 0;
+            padding: 0 1.5rem;
+            font-family: var(--body-font);
+            background-color: #f8fafc;
+            color: #1e293b;
+            transition: .3s;
+        }
+        
+        a { text-decoration: none; }
 
-<script src="https://kit.fontawesome.com/df8ea3872c.js" crossorigin="anonymous"></script>
+        /* Navigation Header Element Styling */
+        .header {
+            width: 100%;
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            background-color: #ffffff;
+            z-index: var(--z-fixed);
+            transition: .3s;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .header_toggle {
+            color: var(--bg-slate);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
 
-<link rel="stylesheet" href="{% static "css/style.css" %}">
+        /* Sidebar Container System */
+        .l-navbar {
+            position: fixed;
+            top: 0;
+            left: -30%;
+            width: var(--nav-width);
+            height: 100vh;
+            background-color: var(--bg-slate);
+            padding: .5rem 0 0 0;
+            transition: .3s;
+            z-index: var(--z-fixed);
+        }
+        
+        .nav {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        
+        .nav_logo, .nav_link {
+            display: grid;
+            grid-template-columns: max-content max-content;
+            align-items: center;
+            column-gap: 1.25rem;
+            padding: .75rem 0 .75rem 1.5rem;
+        }
+        
+        .nav_logo {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1.5rem;
+        }
+        
+        .nav_logo-icon { font-size: 1.5rem; color: #ffffff; }
+        .nav_logo-name { color: #ffffff; font-weight: 700; letter-spacing: 0.5px; }
+        
+        .nav_link {
+            position: relative;
+            color: #94a3b8;
+            transition: .2s;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav_link:hover { color: #ffffff; background: rgba(255,255,255,0.05); }
+        .nav_icon { font-size: 1.25rem; }
+        
+        /* Interactive Toggle Classes */
+        .show { left: 0; }
+        .body-pd { padding-left: calc(var(--nav-width) + 1.5rem); }
+        .active { color: #ffffff; font-weight: 600; background: rgba(255,255,255,0.08); }
+        
+        .active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #38bdf8;
+        }
 
+        /* Elegant Minimal Card Overrides */
+        .booking-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .booking-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        }
+        .metadata-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+        .metadata-value {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 0;
+        }
 
-<style>
-    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");:root{--header-height: 3rem;--nav-width: 68px;--first-color: #4723D9;--first-color-light: #AFA5D9;--white-color: #F7F6FB;--body-font: 'Nunito', sans-serif;--normal-font-size: 1rem;--z-fixed: 100}*,::before,::after{box-sizing: border-box}body{position: relative;margin: var(--header-height) 0 0 0;padding: 0 1rem;font-family: var(--body-font);font-size: var(--normal-font-size);transition: .5s}a{text-decoration: none}.header{width: 100%;height: var(--header-height);position: fixed;top: 0;left: 0;display: flex;align-items: center;justify-content: space-between;padding: 0 1rem;background-color: var(--white-color);z-index: var(--z-fixed);transition: .5s}.header_toggle{color: var(--first-color);font-size: 1.5rem;cursor: pointer}.header_img{width: 35px;height: 35px;display: flex;justify-content: center;border-radius: 50%;overflow: hidden}.header_img img{width: 40px}.l-navbar{position: fixed;top: 0;left: -30%;width: var(--nav-width);height: 100vh;background-color: var(--first-color);padding: .5rem 1rem 0 0;transition: .5s;z-index: var(--z-fixed)}.nav{height: 100%;display: flex;flex-direction: column;justify-content: space-between;overflow: hidden}.nav_logo, .nav_link{display: grid;grid-template-columns: max-content max-content;align-items: center;column-gap: 1rem;padding: .5rem 0 .5rem 1.5rem}.nav_logo{margin-bottom: 2rem}.nav_logo-icon{font-size: 1.25rem;color: var(--white-color)}.nav_logo-name{color: var(--white-color);font-weight: 700}.nav_link{position: relative;color: var(--first-color-light);margin-bottom: 1.5rem;transition: .3s}.nav_link:hover{color: var(--white-color)}.nav_icon{font-size: 1.25rem}.show{left: 0}.body-pd{padding-left: calc(var(--nav-width) + 1rem)}.active{color: var(--white-color)}.active::before{content: '';position: absolute;left: 0;width: 2px;height: 32px;background-color: var(--white-color)}.height-100{height:100vh}@media screen and (min-width: 768px){body{margin: calc(var(--header-height) + 1rem) 0 0 0;padding-left: calc(var(--nav-width) + 2rem)}.header{height: calc(var(--header-height) + 1rem);padding: 0 2rem 0 calc(var(--nav-width) + 2rem)}.header_img{width: 40px;height: 40px}.header_img img{width: 45px}.l-navbar{left: 0;padding: 1rem 1rem 0 0}.show{width: calc(var(--nav-width) + 156px)}.body-pd{padding-left: calc(var(--nav-width) + 188px)}}
-
-</style>
+        @media screen and (min-width: 768px) {
+            body {
+                margin: calc(var(--header-height) + 1.5rem) 0 0 0;
+                padding-left: calc(var(--nav-width) + 2rem);
+            }
+            .header {
+                height: calc(var(--header-height) + 0.5rem);
+                padding: 0 2rem 0 calc(var(--nav-width) + 2rem);
+            }
+            .l-navbar { left: 0; }
+            .show { width: calc(var(--nav-width) + 156px); }
+            .body-pd { padding-left: calc(var(--nav-width) + 176px); }
+        }
+    </style>
 </head>
 <body id="body-pd">
 
     <header class="header" id="header">
-        <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
-       
+        <div class="header_toggle">
+            <i class='bx bx-menu' id="header-toggle"></i>
+        </div>
+        <div class="small fw-medium text-secondary">
+           Logged in as: <span class="text-dark fw-bold">{{profile.full_name}}</span>
+        </div>
     </header>
+
     <div class="l-navbar" id="nav-bar">
         <nav class="nav">
-            <div> <a href="#" class="nav_logo"> <i class='bx bx-layer nav_logo-icon'></i> <span class="nav_logo-name">BBBootstrap</span> </a>
-                <div class="nav_list"> <a href="{% url 'user_dashboard:dashboard' %}" class="nav_link active"> <i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">Dashboard</span> </a>  <a href="{% url 'user_dashboard:bookings' %}" class="nav_link active"> <i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">All bookings</span> </a> <a href="{% url 'user_dashboard:profile' %}" class="nav_link"> <i class='bx bx-user nav_icon'></i> <span class="nav_name">My Profile</span> </a> <a href="{% url 'user_dashboard:notifications' %}" class="nav_link"> <i class='bx bx-message-square-detail nav_icon'></i> <span class="nav_name">Notifications</span> </a> <a href="{% url 'user_dashboard:bookmark' %}" class="nav_link"> <i class='bx bx-bookmark nav_icon'></i> <span class="nav_name">Bookmark</span> </a> <a href="{% url 'user_dashboard:wallet' %}" class="nav_link"> <i class='bx bx-folder nav_icon'></i> <span class="nav_name">Wallet</span> </a> <a href="{% url 'user_dashboard:change_password' %}" class="nav_link"> <i class='bx bx-bar-chart-alt-2 nav_icon'></i> <span class="nav_name">change Password</span> </a> </div>
-            </div> <a href="{% url 'userauths:logOut' %}" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">SignOut</span> </a>
+            <div>
+                <a href="{% url 'hotel:index' %}" class="nav_logo">
+                    <i class='bx bx-layer nav_logo-icon'></i>
+                    <span class="nav_logo-name">CHECK INN</span>
+                </a>
+                <div class="nav_list">
+                    <a href="{% url 'user_dashboard:dashboard' %}" class="nav_link">
+                        <i class='bx bx-grid-alt nav_icon'></i>
+                        <span class="nav_name">Dashboard</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:bookings' %}" class="nav_link active">
+                        <i class='bx bx-calendar-check nav_icon'></i>
+                        <span class="nav_name">All Bookings</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:profile' %}" class="nav_link">
+                        <i class='bx bx-user nav_icon'></i>
+                        <span class="nav_name">My Profile</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:notifications' %}" class="nav_link">
+                        <i class='bx bx-bell nav_icon'></i>
+                        <span class="nav_name">Notifications</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:bookmark' %}" class="nav_link">
+                        <i class='bx bx-bookmark nav_icon'></i>
+                        <span class="nav_name">Bookmarks</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:wallet' %}" class="nav_link">
+                        <i class='bx bx-wallet nav_icon'></i>
+                        <span class="nav_name">Wallet Ledger</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:change_password' %}" class="nav_link">
+                        <i class='bx bx-shield-quarter nav_icon'></i>
+                        <span class="nav_name">Security</span>
+                    </a>
+                </div>
+            </div>
+            <a href="{% url 'userauths:logOut' %}" class="nav_link border-top border-secondary border-opacity-25 pt-3">
+                <i class='bx bx-log-out nav_icon'></i>
+                <span class="nav_name">Sign Out</span>
+            </a>
         </nav>
     </div>
-    <!--Container Main start-->
-    <div class="height-100 bg-light">
-        <div class="container-fluid d"></div>
 
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-12">
-                    <div class="bg-dark text-white p-3">
-                        <h5>All Bookings</h5>
-                    </div>
-
-                </div>
-                {% for b in bookings %}
-                <div class="col-12 p-4">
-                    <h5>{{b.full_name}} <span></span></h5>
-                    <p><b>Booking Item: </b> {{b.hotel.name}}</p>
-                    <p><b>Checkin Date: </b> {{b.check_in_date}} </p>
-                    <p><b>Checkout Date: </b> {{b.check_out_date}} </p>
-                    <p><b>Total Days: </b> {{b.total_days}} </p>
-                    <p><b>Adults: </b> {{b.num_adults}} </p>
-                    <p><b>Children: </b> {{b.num_children}} </p>
-                    <p><b>Price: </b>{{b.total}} </p>
-                    <br>
-                    <a href="{% url 'user_dashboard:booking_detail' b.booking_id %}" class="btn border p-2"><i class="fas fa-eye"></i> View Booking Detail</a>
-                </div>
-                <hr>
-                {% endfor %}
-
+    <main class="container-fluid py-2 px-0">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+            <div>
+                <h1 class="h4 fw-bold mb-1">Reservation Archive</h1>
+                <p class="text-muted small mb-0">Browse, review, and extract dynamic metadata fields across all saved trip files.</p>
             </div>
         </div>
 
+        <div class="d-flex flex-column gap-3 mb-5">
+            {% for b in bookings %}
+            <div class="booking-card shadow-sm">
+                
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 pb-3 mb-3 border-bottom">
+                    <div>
+                        <span class="badge bg-light text-dark border px-2.5 py-1 mb-1 font-monospace" style="font-size:0.75rem;">ID: {{ b.booking_id }}</span>
+                        <h2 class="h5 fw-bold text-dark mb-0">{{ b.hotel.name }}</h2>
+                    </div>
+                    <div class="text-end">
+                        <span class="small text-muted d-block mb-1">Account Holder</span>
+                        <p class="fw-semibold text-dark small mb-0"><i class="fa-regular fa-user me-1 text-muted"></i>{{ b.full_name }}</p>
+                    </div>
+                </div>
 
+                <div class="row g-3 align-items-center">
+                    <div class="col-6 col-sm-4 col-md-2">
+                        <p class="metadata-label"><i class="fa-regular fa-calendar-plus me-1"></i>Check-In</p>
+                        <p class="metadata-value small">{{ b.check_in_date }}</p>
+                    </div>
+                    <div class="col-6 col-sm-4 col-md-2">
+                        <p class="metadata-label"><i class="fa-regular fa-calendar-minus me-1"></i>Check-Out</p>
+                        <p class="metadata-value small">{{ b.check_out_date }}</p>
+                    </div>
+                    <div class="col-4 col-sm-4 col-md-2">
+                        <p class="metadata-label">Duration</p>
+                        <p class="metadata-value">{{ b.total_days }} Night{{ b.total_days|pluralize }}</p>
+                    </div>
+                    <div class="col-4 col-sm-6 col-md-2">
+                        <p class="metadata-label">Occupancy</p>
+                        <p class="metadata-value small text-nowrap">
+                            {{ b.num_adults }} Adt • {{ b.num_children }} Chd
+                        </p>
+                    </div>
+                    <div class="col-4 col-sm-6 col-md-2">
+                        <p class="metadata-label">Total Value</p>
+                        <p class="metadata-value fw-bold text-dark">${{ b.total }}</p>
+                    </div>
+                    <div class="col-12 col-md-2 text-md-end pt-2 pt-md-0">
+                        <a href="{% url 'user_dashboard:booking_detail' b.booking_id %}" class="btn btn-dark btn-sm w-100 py-2 font-weight-medium">
+                            <i class="fa-regular fa-eye me-1"></i> View Ledger
+                        </a>
+                    </div>
+                </div>
 
+            </div>
+            {% empty %}
+            <div class="p-5 text-center text-muted bg-white border rounded-3 shadow-sm">
+                <i class="fa-regular fa-folder-open fa-2x mb-3 text-secondary opacity-50"></i>
+                <h5 class="fw-bold text-dark h6">No Active Reservation Files</h5>
+                <p class="small mb-0">Your account does not show any historically active hotel room reservation nodes.</p>
+            </div>
+            {% endfor %}
+        </div>
 
+    </main>
 
-
-
-
-
-
-
-
-
-
-
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function(event) {
-   
-   const showNavbar = (toggleId, navId, bodyId, headerId) =>{
-   const toggle = document.getElementById(toggleId),
-   nav = document.getElementById(navId),
-   bodypd = document.getElementById(bodyId),
-   headerpd = document.getElementById(headerId)
-   
-   // Validate that all variables exist
-   if(toggle && nav && bodypd && headerpd){
-   toggle.addEventListener('click', ()=>{
-   // show navbar
-   nav.classList.toggle('show')
-   // change icon
-   toggle.classList.toggle('bx-x')
-   // add padding to body
-   bodypd.classList.toggle('body-pd')
-   // add padding to header
-   headerpd.classList.toggle('body-pd')
-   })
-   }
-   }
-   
-   showNavbar('header-toggle','nav-bar','body-pd','header')
-   
-   /*===== LINK ACTIVE =====*/
-   const linkColor = document.querySelectorAll('.nav_link')
-   
-   function colorLink(){
-   if(linkColor){
-   linkColor.forEach(l=> l.classList.remove('active'))
-   this.classList.add('active')
-   }
-   }
-   linkColor.forEach(l=> l.addEventListener('click', colorLink))
-   
-    // Your code to run since DOM is loaded and ready
-   });
+        document.addEventListener("DOMContentLoaded", function() {
+            const showNavbar = (toggleId, navId, bodyId, headerId) => {
+                const toggle = document.getElementById(toggleId),
+                      nav = document.getElementById(navId),
+                      bodypd = document.getElementById(bodyId),
+                      headerpd = document.getElementById(headerId)
+                
+                if (toggle && nav && bodypd && headerpd) {
+                    toggle.addEventListener('click', () => {
+                        nav.classList.toggle('show');
+                        toggle.classList.toggle('bx-x');
+                        bodypd.classList.toggle('body-pd');
+                        headerpd.classList.toggle('body-pd');
+                    });
+                }
+            }
+            
+            showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header');
+            
+            const linkColor = document.querySelectorAll('.nav_link');
+            function colorLink() {
+                if (linkColor) {
+                    linkColor.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            }
+            linkColor.forEach(l => l.addEventListener('click', colorLink));
+        });
     </script>
-
 </body>
 </html>

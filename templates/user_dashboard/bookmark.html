@@ -1,136 +1,323 @@
-{% load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Bookmarked Properties</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/df8ea3872c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Boxicons CSS -->
-<link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+        
+        :root {
+            --header-height: 3.5rem;
+            --nav-width: 68px;
+            --bg-slate: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --body-font: 'Inter', sans-serif;
+            --z-fixed: 100;
+        }
+        
+        body {
+            position: relative;
+            margin: var(--header-height) 0 0 0;
+            padding: 0 1.5rem;
+            font-family: var(--body-font);
+            background-color: #f8fafc;
+            color: #1e293b;
+            transition: .3s;
+        }
+        
+        a { text-decoration: none; }
 
-<script src="https://kit.fontawesome.com/df8ea3872c.js" crossorigin="anonymous"></script>
+        /* Navigation Header Element Styling */
+        .header {
+            width: 100%;
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            background-color: #ffffff;
+            z-index: var(--z-fixed);
+            transition: .3s;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .header_toggle {
+            color: var(--bg-slate);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
 
-<link rel="stylesheet" href="{% static "css/style.css" %}">
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        /* Sidebar Infrastructure Layout */
+        .l-navbar {
+            position: fixed;
+            top: 0;
+            left: -30%;
+            width: var(--nav-width);
+            height: 100vh;
+            background-color: var(--bg-slate);
+            padding: .5rem 0 0 0;
+            transition: .3s;
+            z-index: var(--z-fixed);
+        }
+        
+        .nav {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        
+        .nav_logo, .nav_link {
+            display: grid;
+            grid-template-columns: max-content max-content;
+            align-items: center;
+            column-gap: 1.25rem;
+            padding: .75rem 0 .75rem 1.5rem;
+        }
+        
+        .nav_logo {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1.5rem;
+        }
+        
+        .nav_logo-icon { font-size: 1.5rem; color: #ffffff; }
+        .nav_logo-name { color: #ffffff; font-weight: 700; letter-spacing: 0.5px; }
+        
+        .nav_link {
+            position: relative;
+            color: #94a3b8;
+            transition: .2s;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav_link:hover { color: #ffffff; background: rgba(255,255,255,0.05); }
+        .nav_icon { font-size: 1.25rem; }
+        
+        /* Interactive Panel Utility States */
+        .show { left: 0; }
+        .body-pd { padding-left: calc(var(--nav-width) + 1.5rem); }
+        .active { color: #ffffff; font-weight: 600; background: rgba(255,255,255,0.08); }
+        
+        .active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #38bdf8;
+        }
 
+        /* Modern Dashboard Media Card Overrides */
+        .bookmark-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .bookmark-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .hotel-thumb {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+        .btn-action-delete {
+            border: 1px solid #fee2e2;
+            background: #fff5f5;
+            color: #ef4444;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 6px;
+            padding: 0.35rem 0.75rem;
+            transition: all 0.15s ease;
+        }
+        .btn-action-delete:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
 
-<style>
-    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");:root{--header-height: 3rem;--nav-width: 68px;--first-color: #4723D9;--first-color-light: #AFA5D9;--white-color: #F7F6FB;--body-font: 'Nunito', sans-serif;--normal-font-size: 1rem;--z-fixed: 100}*,::before,::after{box-sizing: border-box}body{position: relative;margin: var(--header-height) 0 0 0;padding: 0 1rem;font-family: var(--body-font);font-size: var(--normal-font-size);transition: .5s}a{text-decoration: none}.header{width: 100%;height: var(--header-height);position: fixed;top: 0;left: 0;display: flex;align-items: center;justify-content: space-between;padding: 0 1rem;background-color: var(--white-color);z-index: var(--z-fixed);transition: .5s}.header_toggle{color: var(--first-color);font-size: 1.5rem;cursor: pointer}.header_img{width: 35px;height: 35px;display: flex;justify-content: center;border-radius: 50%;overflow: hidden}.header_img img{width: 40px}.l-navbar{position: fixed;top: 0;left: -30%;width: var(--nav-width);height: 100vh;background-color: var(--first-color);padding: .5rem 1rem 0 0;transition: .5s;z-index: var(--z-fixed)}.nav{height: 100%;display: flex;flex-direction: column;justify-content: space-between;overflow: hidden}.nav_logo, .nav_link{display: grid;grid-template-columns: max-content max-content;align-items: center;column-gap: 1rem;padding: .5rem 0 .5rem 1.5rem}.nav_logo{margin-bottom: 2rem}.nav_logo-icon{font-size: 1.25rem;color: var(--white-color)}.nav_logo-name{color: var(--white-color);font-weight: 700}.nav_link{position: relative;color: var(--first-color-light);margin-bottom: 1.5rem;transition: .3s}.nav_link:hover{color: var(--white-color)}.nav_icon{font-size: 1.25rem}.show{left: 0}.body-pd{padding-left: calc(var(--nav-width) + 1rem)}.active{color: var(--white-color)}.active::before{content: '';position: absolute;left: 0;width: 2px;height: 32px;background-color: var(--white-color)}.height-100{height:100vh}@media screen and (min-width: 768px){body{margin: calc(var(--header-height) + 1rem) 0 0 0;padding-left: calc(var(--nav-width) + 2rem)}.header{height: calc(var(--header-height) + 1rem);padding: 0 2rem 0 calc(var(--nav-width) + 2rem)}.header_img{width: 40px;height: 40px}.header_img img{width: 45px}.l-navbar{left: 0;padding: 1rem 1rem 0 0}.show{width: calc(var(--nav-width) + 156px)}.body-pd{padding-left: calc(var(--nav-width) + 188px)}}
+        @media screen and (min-width: 576px) {
+            .hotel-thumb {
+                width: 180px;
+                height: 100%;
+                min-height: 140px;
+            }
+        }
 
-</style>
+        @media screen and (min-width: 768px) {
+            body {
+                margin: calc(var(--header-height) + 1.5rem) 0 0 0;
+                padding-left: calc(var(--nav-width) + 2rem);
+            }
+            .header {
+                height: calc(var(--header-height) + 0.5rem);
+                padding: 0 2rem 0 calc(var(--nav-width) + 2rem);
+            }
+            .l-navbar { left: 0; }
+            .show { width: calc(var(--nav-width) + 156px); }
+            .body-pd { padding-left: calc(var(--nav-width) + 176px); }
+        }
+    </style>
 </head>
 <body id="body-pd">
 
     <header class="header" id="header">
-        <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
-       
+        <div class="header_toggle">
+            <i class='bx bx-menu' id="header-toggle"></i>
+        </div>
+        <div class="small fw-medium text-secondary">
+           Logged in as: <span class="text-dark fw-bold">{{profile.full_name}}</span>
+        </div>
     </header>
+
     <div class="l-navbar" id="nav-bar">
         <nav class="nav">
-            <div> <a href="#" class="nav_logo"> <i class='bx bx-layer nav_logo-icon'></i> <span class="nav_logo-name">BBBootstrap</span> </a>
-                <div class="nav_list"> <a href="{% url 'user_dashboard:dashboard' %}" class="nav_link active"> <i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">Dashboard</span> </a>  <a href="{% url 'user_dashboard:bookings' %}" class="nav_link active"> <i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">All bookings</span> </a> <a href="{% url 'user_dashboard:profile' %}" class="nav_link"> <i class='bx bx-user nav_icon'></i> <span class="nav_name">My Profile</span> </a> <a href="{% url 'user_dashboard:notifications' %}" class="nav_link"> <i class='bx bx-message-square-detail nav_icon'></i> <span class="nav_name">Notifications</span> </a> <a href="{% url 'user_dashboard:bookmark' %}" class="nav_link"> <i class='bx bx-bookmark nav_icon'></i> <span class="nav_name">Bookmark</span> </a> <a href="{% url 'user_dashboard:wallet' %}" class="nav_link"> <i class='bx bx-folder nav_icon'></i> <span class="nav_name">Wallet</span> </a> <a href="{% url 'user_dashboard:change_password' %}" class="nav_link"> <i class='bx bx-bar-chart-alt-2 nav_icon'></i> <span class="nav_name">change Password</span> </a> </div>
-            </div> <a href="{% url 'userauths:logOut' %}" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">SignOut</span> </a>
+            <div>
+                <a href="{% url 'hotel:index' %}" class="nav_logo">
+                    <i class='bx bx-layer nav_logo-icon'></i>
+                    <span class="nav_logo-name">CHECK INN</span>
+                </a>
+                <div class="nav_list">
+                    <a href="{% url 'user_dashboard:dashboard' %}" class="nav_link">
+                        <i class='bx bx-grid-alt nav_icon'></i>
+                        <span class="nav_name">Dashboard</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:bookings' %}" class="nav_link">
+                        <i class='bx bx-calendar-check nav_icon'></i>
+                        <span class="nav_name">All Bookings</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:profile' %}" class="nav_link">
+                        <i class='bx bx-user nav_icon'></i>
+                        <span class="nav_name">My Profile</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:notifications' %}" class="nav_link">
+                        <i class='bx bx-bell nav_icon'></i>
+                        <span class="nav_name">Notifications</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:bookmark' %}" class="nav_link active">
+                        <i class='bx bx-bookmark nav_icon'></i>
+                        <span class="nav_name">Bookmarks</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:wallet' %}" class="nav_link">
+                        <i class='bx bx-wallet nav_icon'></i>
+                        <span class="nav_name">Wallet Ledger</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:change_password' %}" class="nav_link">
+                        <i class='bx bx-shield-quarter nav_icon'></i>
+                        <span class="nav_name">Security</span>
+                    </a>
+                </div>
+            </div>
+            <a href="{% url 'userauths:logOut' %}" class="nav_link border-top border-secondary border-opacity-25 pt-3">
+                <i class='bx bx-log-out nav_icon'></i>
+                <span class="nav_name">Sign Out</span>
+            </a>
         </nav>
     </div>
-    <!--Container Main start-->
-    <div class="height-100 bg-light">
-        <div class="container-fluid d"></div>
 
-        <div class="bg-dark text-light p-3">
-            <h5><i class="fa-solid fa-heart mr-3"></i> All Bookmarked Hotel</h5>
-
+    <main class="container-fluid py-2 px-0">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+            <div>
+                <h1 class="h4 fw-bold mb-1">Saved Properties</h1>
+                <p class="text-muted small mb-0">Manage hotel nodes pinned to your curated favorites watchlist portfolio.</p>
+            </div>
         </div>
-        <div class="container pt-4">
+
+        <div class="d-flex flex-column gap-3 mb-5">
             {% for b in bookmark %}
-            <div class="row border ">
-                <div class="col-3" style="background-image: url('{{b.hotel.image.url}}'); background-size: cover; background-position: center;"></div>
-                <div class="col-9 py-4 my-2 ">
-                    <p><b>{{b.hotel.name}}</b>          <a class="btn border float-end" href="{% url 'user_dashboard:delete_bookmark' b.bid  %}"><i class="fa-solid fa-trash text-danger"></i> delete</a>  </p>
-                    <small><i class="fa-solid fa-location-dot colo"></i> {{b.hotel.address}}</small><br>
-                    <small><i class="fa-solid fa-envelope colo"></i> {{b.hotel.email}}</small><br>
-                    <small><i class="fa-solid fa-phone colo"></i> {{b.hotel.mobile}}</small>
-                    
+            <div class="bookmark-card shadow-sm d-flex flex-column flex-sm-row">
+                
+                <img src="{{ b.hotel.image.url }}" class="hotel-thumb" alt="{{ b.hotel.name }}">
+                
+                <div class="p-4 flex-grow-1 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                            <h2 class="h5 fw-bold text-dark mb-0">{{ b.hotel.name }}</h2>
+                            <a class="btn btn-action-delete d-flex align-items-center gap-1.5" href="{% url 'user_dashboard:delete_bookmark' b.bid %}">
+                                <i class="fa-solid fa-trash-can"></i> Remove
+                            </a>
+                        </div>
+                        
+                        <div class="text-secondary small d-flex flex-column gap-1 mt-2">
+                            <span class="d-flex align-items-center text-truncate">
+                                <i class="fa-solid fa-location-dot text-muted me-2" style="width: 14px;"></i>{{ b.hotel.address }}
+                            </span>
+                            <span class="d-flex align-items-center">
+                                <i class="fa-solid fa-envelope text-muted me-2" style="width: 14px;"></i>{{ b.hotel.email }}
+                            </span>
+                            <span class="d-flex align-items-center">
+                                <i class="fa-solid fa-phone text-muted me-2" style="width: 14px;"></i>{{ b.hotel.mobile }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
+
+            </div>
+            {% empty %}
+            <div class="p-5 text-center text-muted bg-white border rounded-3 shadow-sm">
+                <i class="fa-regular fa-heart fa-2x mb-3 text-secondary opacity-50"></i>
+                <h5 class="fw-bold text-dark h6">Watchlist is Empty</h5>
+                <p class="small mb-0">You have not bookmarked any establishment profiles into your dynamic tracking center.</p>
             </div>
             {% endfor %}
         </div>
 
+    </main>
 
-
-
-
-            
-    </div>
-
-
-
-
-
-
-
-
-
-
-       <script>
-        {% for message in messages %}
-          Swal.fire({
-            icon:"{{ message.tags }}",
-            title:"{{ message }}",
-            text:"{{message.tags}}",
-            timer: 1500
-          });
-        {% endfor %}
-      </script>
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function(event) {
-   
-   const showNavbar = (toggleId, navId, bodyId, headerId) =>{
-   const toggle = document.getElementById(toggleId),
-   nav = document.getElementById(navId),
-   bodypd = document.getElementById(bodyId),
-   headerpd = document.getElementById(headerId)
-   
-   // Validate that all variables exist
-   if(toggle && nav && bodypd && headerpd){
-   toggle.addEventListener('click', ()=>{
-   // show navbar
-   nav.classList.toggle('show')
-   // change icon
-   toggle.classList.toggle('bx-x')
-   // add padding to body
-   bodypd.classList.toggle('body-pd')
-   // add padding to header
-   headerpd.classList.toggle('body-pd')
-   })
-   }
-   }
-   
-   showNavbar('header-toggle','nav-bar','body-pd','header')
-   
-   /*===== LINK ACTIVE =====*/
-   const linkColor = document.querySelectorAll('.nav_link')
-   
-   function colorLink(){
-   if(linkColor){
-   linkColor.forEach(l=> l.classList.remove('active'))
-   this.classList.add('active')
-   }
-   }
-   linkColor.forEach(l=> l.addEventListener('click', colorLink))
-   
-    // Your code to run since DOM is loaded and ready
-   });
-    </script>
+        document.addEventListener("DOMContentLoaded", function() {
+            {% for message in messages %}
+                Swal.fire({
+                    icon: "{{ message.tags }}",
+                    title: "{{ message }}",
+                    confirmButtonColor: "#0f172a",
+                    timer: 2500
+                });
+            {% endfor %}
 
+            // Base Layout Responsive Drawer Interactivity Handler
+            const showNavbar = (toggleId, navId, bodyId, headerId) => {
+                const toggle = document.getElementById(toggleId),
+                      nav = document.getElementById(navId),
+                      bodypd = document.getElementById(bodyId),
+                      headerpd = document.getElementById(headerId)
+                
+                if (toggle && nav && bodypd && headerpd) {
+                    toggle.addEventListener('click', () => {
+                        nav.classList.toggle('show');
+                        toggle.classList.toggle('bx-x');
+                        bodypd.classList.toggle('body-pd');
+                        headerpd.classList.toggle('body-pd');
+                    });
+                }
+            }
+            
+            showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header');
+        });
+    </script>
 </body>
 </html>

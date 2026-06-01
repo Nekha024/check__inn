@@ -1,170 +1,412 @@
-{% load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Booking Details Ledger</title>
+    
+    <!-- Unified Modern Framework Dependencies (Strict Bootstrap 5) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/df8ea3872c.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Boxicons CSS -->
-<link href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+        
+        :root {
+            --header-height: 3.5rem;
+            --nav-width: 68px;
+            --bg-slate: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --body-font: 'Inter', sans-serif;
+            --z-fixed: 100;
+        }
+        
+        body {
+            position: relative;
+            margin: var(--header-height) 0 0 0;
+            padding: 0 1.5rem;
+            font-family: var(--body-font);
+            background-color: #f8fafc;
+            color: #1e293b;
+            transition: .3s;
+        }
+        
+        a { text-decoration: none; }
 
-<script src="https://kit.fontawesome.com/df8ea3872c.js" crossorigin="anonymous"></script>
+        /* Navigation Header Element Styling */
+        .header {
+            width: 100%;
+            height: var(--header-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            background-color: #ffffff;
+            z-index: var(--z-fixed);
+            transition: .3s;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .header_toggle {
+            color: var(--bg-slate);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
 
-<link rel="stylesheet" href="{% static "css/style.css" %}">
+        /* Sidebar Infrastructure Layout */
+        .l-navbar {
+            position: fixed;
+            top: 0;
+            left: -30%;
+            width: var(--nav-width);
+            height: 100vh;
+            background-color: var(--bg-slate);
+            padding: .5rem 0 0 0;
+            transition: .3s;
+            z-index: var(--z-fixed);
+        }
+        
+        .nav {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        
+        .nav_logo, .nav_link {
+            display: grid;
+            grid-template-columns: max-content max-content;
+            align-items: center;
+            column-gap: 1.25rem;
+            padding: .75rem 0 .75rem 1.5rem;
+        }
+        
+        .nav_logo {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1.5rem;
+        }
+        
+        .nav_logo-icon { font-size: 1.5rem; color: #ffffff; }
+        .nav_logo-name { color: #ffffff; font-weight: 700; letter-spacing: 0.5px; }
+        
+        .nav_link {
+            position: relative;
+            color: #94a3b8;
+            transition: .2s;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav_link:hover { color: #ffffff; background: rgba(255,255,255,0.05); }
+        .nav_icon { font-size: 1.25rem; }
+        
+        /* Interactive Panel States */
+        .show { left: 0; }
+        .body-pd { padding-left: calc(var(--nav-width) + 1.5rem); }
+        .active { color: #ffffff; font-weight: 600; background: rgba(255,255,255,0.08); }
+        
+        .active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #38bdf8;
+        }
 
+        /* Premium Minimal Layout Components */
+        .detail-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.75rem;
+        }
+        
+        .meta-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+        
+        .meta-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 0;
+        }
 
-<style>
-    @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");:root{--header-height: 3rem;--nav-width: 68px;--first-color: #4723D9;--first-color-light: #AFA5D9;--white-color: #F7F6FB;--body-font: 'Nunito', sans-serif;--normal-font-size: 1rem;--z-fixed: 100}*,::before,::after{box-sizing: border-box}body{position: relative;margin: var(--header-height) 0 0 0;padding: 0 1rem;font-family: var(--body-font);font-size: var(--normal-font-size);transition: .5s}a{text-decoration: none}.header{width: 100%;height: var(--header-height);position: fixed;top: 0;left: 0;display: flex;align-items: center;justify-content: space-between;padding: 0 1rem;background-color: var(--white-color);z-index: var(--z-fixed);transition: .5s}.header_toggle{color: var(--first-color);font-size: 1.5rem;cursor: pointer}.header_img{width: 35px;height: 35px;display: flex;justify-content: center;border-radius: 50%;overflow: hidden}.header_img img{width: 40px}.l-navbar{position: fixed;top: 0;left: -30%;width: var(--nav-width);height: 100vh;background-color: var(--first-color);padding: .5rem 1rem 0 0;transition: .5s;z-index: var(--z-fixed)}.nav{height: 100%;display: flex;flex-direction: column;justify-content: space-between;overflow: hidden}.nav_logo, .nav_link{display: grid;grid-template-columns: max-content max-content;align-items: center;column-gap: 1rem;padding: .5rem 0 .5rem 1.5rem}.nav_logo{margin-bottom: 2rem}.nav_logo-icon{font-size: 1.25rem;color: var(--white-color)}.nav_logo-name{color: var(--white-color);font-weight: 700}.nav_link{position: relative;color: var(--first-color-light);margin-bottom: 1.5rem;transition: .3s}.nav_link:hover{color: var(--white-color)}.nav_icon{font-size: 1.25rem}.show{left: 0}.body-pd{padding-left: calc(var(--nav-width) + 1rem)}.active{color: var(--white-color)}.active::before{content: '';position: absolute;left: 0;width: 2px;height: 32px;background-color: var(--white-color)}.height-100{height:100vh}@media screen and (min-width: 768px){body{margin: calc(var(--header-height) + 1rem) 0 0 0;padding-left: calc(var(--nav-width) + 2rem)}.header{height: calc(var(--header-height) + 1rem);padding: 0 2rem 0 calc(var(--nav-width) + 2rem)}.header_img{width: 40px;height: 40px}.header_img img{width: 45px}.l-navbar{left: 0;padding: 1rem 1rem 0 0}.show{width: calc(var(--nav-width) + 156px)}.body-pd{padding-left: calc(var(--nav-width) + 188px)}}
-
-</style>
+        @media screen and (min-width: 768px) {
+            body {
+                margin: calc(var(--header-height) + 1.5rem) 0 0 0;
+                padding-left: calc(var(--nav-width) + 2rem);
+            }
+            .header {
+                height: calc(var(--header-height) + 0.5rem);
+                padding: 0 2rem 0 calc(var(--nav-width) + 2rem);
+            }
+            .l-navbar { left: 0; }
+            .show { width: calc(var(--nav-width) + 156px); }
+            .body-pd { padding-left: calc(var(--nav-width) + 176px); }
+        }
+    </style>
 </head>
 <body id="body-pd">
 
+    <!-- Top Navigation Header -->
     <header class="header" id="header">
-        <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
-       
+        <div class="header_toggle">
+            <i class='bx bx-menu' id="header-toggle"></i>
+        </div>
+        <div class="small fw-medium text-secondary">
+           Logged in as: <span class="text-dark fw-bold">{{profile.full_name}}</span>
+        </div>
     </header>
+
+    <!-- Side View Navigation Drawer Bar -->
     <div class="l-navbar" id="nav-bar">
         <nav class="nav">
-            <div> <a href="#" class="nav_logo"> <i class='bx bx-layer nav_logo-icon'></i> <span class="nav_logo-name">BBBootstrap</span> </a>
-                <div class="nav_list"> <a href="{% url 'user_dashboard:dashboard' %}" class="nav_link active"> <i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">Dashboard</span> </a>  <a href="{% url 'user_dashboard:bookings' %}" class="nav_link active"> <i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">All bookings</span> </a> <a href="{% url 'user_dashboard:profile' %}" class="nav_link"> <i class='bx bx-user nav_icon'></i> <span class="nav_name">My Profile</span> </a> <a href="{% url 'user_dashboard:notifications' %}" class="nav_link"> <i class='bx bx-message-square-detail nav_icon'></i> <span class="nav_name">Notifications</span> </a> <a href="{% url 'user_dashboard:bookmark' %}" class="nav_link"> <i class='bx bx-bookmark nav_icon'></i> <span class="nav_name">Bookmark</span> </a> <a href="{% url 'user_dashboard:wallet' %}" class="nav_link"> <i class='bx bx-folder nav_icon'></i> <span class="nav_name">Wallet</span> </a> <a href="{% url 'user_dashboard:change_password' %}" class="nav_link"> <i class='bx bx-bar-chart-alt-2 nav_icon'></i> <span class="nav_name">change Password</span> </a> </div>
-            </div> <a href="{% url 'userauths:logOut' %}" class="nav_link"> <i class='bx bx-log-out nav_icon'></i> <span class="nav_name">SignOut</span> </a>
+            <div>
+                <a href="#" class="nav_logo">
+                    <i class='bx bx-layer nav_logo-icon'></i>
+                    <span class="nav_logo-name">CoreSuite</span>
+                </a>
+                <div class="nav_list">
+                    <a href="{% url 'user_dashboard:dashboard' %}" class="nav_link">
+                        <i class='bx bx-grid-alt nav_icon'></i>
+                        <span class="nav_name">Dashboard</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:bookings' %}" class="nav_link active">
+                        <i class='bx bx-calendar-check nav_icon'></i>
+                        <span class="nav_name">All Bookings</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:profile' %}" class="nav_link">
+                        <i class='bx bx-user nav_icon'></i>
+                        <span class="nav_name">My Profile</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:notifications' %}" class="nav_link">
+                        <i class='bx bx-bell nav_icon'></i>
+                        <span class="nav_name">Notifications</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:bookmark' %}" class="nav_link">
+                        <i class='bx bx-bookmark nav_icon'></i>
+                        <span class="nav_name">Bookmarks</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:wallet' %}" class="nav_link">
+                        <i class='bx bx-wallet nav_icon'></i>
+                        <span class="nav_name">Wallet Ledger</span>
+                    </a>
+                    <a href="{% url 'user_dashboard:change_password' %}" class="nav_link">
+                        <i class='bx bx-shield-quarter nav_icon'></i>
+                        <span class="nav_name">Security</span>
+                    </a>
+                </div>
+            </div>
+            <a href="{% url 'userauths:logOut' %}" class="nav_link border-top border-secondary border-opacity-25 pt-3">
+                <i class='bx bx-log-out nav_icon'></i>
+                <span class="nav_name">Sign Out</span>
+            </a>
         </nav>
     </div>
-    <!--Container Main start-->
-    <div class="height-100 bg-light">
-        <div class="container-fluid d"></div>
 
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-6">
-                <div class="bg-dark text-light p-2">
-                    <h5>Booking ID: {{booking.booking_id}}</h5>
-                </div>
-                <div class="left-content border p-3">
-                    <h5>{{booking.full_name|title}}<span class="bg-success ml-2">{{booking.payment_status|title}}</span></h5>
-                    <p><b>Hotel Name: </b> {{booking.hotel.name}}</p>
-                    <p><b>Hotel Address: </b> {{booking.hotel.address}}</p>
-                    <p><b>Hotel Email: </b> {{booking.hotel.email}}</p>
-                    <p><b>Hotel Phone: </b> {{booking.hotel.mobile}}</p>
-
-                    <hr>
-
-                    <p><b>Checkin Date: </b> {{booking.check_in_date}}</p>
-                    <p><b>Checkout Date: </b> {{booking.check_out_date}}</p>
-                <p><b>Total Days: </b> {{booking.total_days}}</p>
-                    <p><b>Adults : </b> {{booking.num_adults}}</p>
-                    <p><b>Children: </b> {{booking.num_children}}</p>
-
-                    <hr>
-
-                    <p><b>Full Name:</b> {{booking.full_name}}</p>
-                    <p><b>Email address:</b>{{booking.email}}</p>
-                    <p><b>Phone Number:</b> {{booking.phone}}</p>
-
-                    <hr>
-
-                    <p><b>Price:</b> {{booking.total}}</p>
-
-                    <hr>
-
-                    <p><b>Price:</b> {{booking.date}}</p>
-
-
-
-
-                </div>
-
-
+    <!-- Main Active Workspace Content Frame -->
+    <main class="container-fluid py-2 px-0">
+        
+        <!-- Header Branding Meta Section -->
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-4 pb-3 border-bottom">
+            <div>
+                <span class="badge bg-light text-dark border px-2.5 py-1 mb-1 font-monospace" style="font-size:0.75rem;">LEDGER REF: {{ booking.booking_id }}</span>
+                <h1 class="h4 fw-bold mb-0">Invoice Information View</h1>
             </div>
-            <div class="col-6">
-                <div class="bg-dark text-light p-2">
-                    <h5>Booked Rooms({{booking.room.all.count}})</h5>
-                </div>
-                    <div class="right_content  border p-3">
-                        {% for r in booking.room.all %}
-                        <h5>{{r.room_type.type}}</h5>
-                        <p><b>Room Number:</b> {{r.room_number}}</p>
-                        <p><b>Room Price:</b> {{r.room_type.price}} $</p>
-
-                        <hr>
-
-                        {% endfor %}
-                    
-                </div>
+            <div>
+                <a href="{% url 'user_dashboard:bookings' %}" class="btn btn-outline-secondary btn-sm px-3 fw-medium">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Return to History
+                </a>
             </div>
         </div>
-    </div>
 
-        
-        
+        <!-- Master Data Columns Row Grid Layout -->
+        <div class="row g-4 mb-5">
+            
+            <!-- Left Side Data Blocks: Base Registration Details Portfolio -->
+            <div class="col-12 col-lg-7">
+                <div class="d-flex flex-column gap-4">
+                    
+                    <!-- Card Panel Segment: Order Overview Summary -->
+                    <div class="detail-card shadow-sm">
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                            <h3 class="h6 fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                                <i class="fa-regular fa-file-lines text-muted"></i>Registration Overview
+                            </h3>
+                            {% if booking.payment_status|lower == 'paid' %}
+                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 py-1 px-2.5 small fw-semibold">Settled Ledger</span>
+                            {% else %}
+                            <span class="badge bg-warning bg-opacity-10 text-warning-emphasis border border-warning border-opacity-25 py-1 px-2.5 small fw-semibold">{{ booking.payment_status|title }}</span>
+                            {% endif %}
+                        </div>
 
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <p class="meta-label">Primary Account Registrant</p>
+                                <p class="meta-value text-dark fw-semibold">{{ booking.full_name|title }}</p>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <p class="meta-label">Total Capital Charges</p>
+                                <p class="meta-value text-dark fw-bold fs-5">${{ booking.total }}</p>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <p class="meta-label">System File Timestamp</p>
+                                <p class="meta-value small">{{ booking.date }}</p>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <p class="meta-label">Duration Metrics</p>
+                                <p class="meta-value">{{ booking.total_days }} Night{{ booking.total_days|pluralize }}</p>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Card Panel Segment: Stay Parameters & Window Allocation Coordinates -->
+                    <div class="detail-card shadow-sm">
+                        <h3 class="h6 fw-bold text-dark mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                            <i class="fa-regular fa-calendar-days text-muted"></i>Stay Window Parameters
+                        </h3>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <p class="meta-label"><i class="fa-regular fa-calendar-plus text-muted me-1"></i>Check-In Date</p>
+                                <p class="meta-value text-dark fw-medium">{{ booking.check_in_date }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="meta-label"><i class="fa-regular fa-calendar-minus text-muted me-1"></i>Check-Out Date</p>
+                                <p class="meta-value text-dark fw-medium">{{ booking.check_out_date }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="meta-label">Adult Cohort Allocation</p>
+                                <p class="meta-value">{{ booking.num_adults }} Guest{{ booking.num_adults|pluralize }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="meta-label">Minor Cohort Allocation</p>
+                                <p class="meta-value">{{ booking.num_children }} Child{{ booking.num_children|pluralize:"ren" }}</p>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Card Panel Segment: Client Personal Particular Data Points -->
+                    <div class="detail-card shadow-sm">
+                        <h3 class="h6 fw-bold text-dark mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                            <i class="fa-regular fa-id-card text-muted"></i>Registrant Contact Ledger
+                        </h3>
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6">
+                                <p class="meta-label">Legal Full Name</p>
+                                <p class="meta-value">{{ booking.full_name }}</p>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <p class="meta-label">Communication Email Input</p>
+                                <p class="meta-value small text-lowercase text-truncate d-block">{{ booking.email }}</p>
+                            </div>
+                            <div class="col-12">
+                                <p class="meta-label">Contact Mobile Terminal</p>
+                                <p class="meta-value text-dark font-monospace">{{ booking.phone }}</p>
+                            </div>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
 
+            <!-- Right Side Data Blocks: Corporate Target Profile & Room Distribution Mapping Portfolio -->
+            <div class="col-12 col-lg-5">
+                <div class="d-flex flex-column gap-4 position-sticky" style="top: 2rem;">
+                    
+                    <!-- Card Panel Segment: Target Corporate Establishment Registry Node -->
+                    <div class="detail-card shadow-sm bg-white">
+                        <h3 class="h6 fw-bold text-dark mb-3 pb-2 border-bottom d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-hotel text-muted"></i>Target Establishment Destination
+                        </h3>
+                        <h4 class="h5 fw-bold text-dark mb-2">{{ booking.hotel.name }}</h4>
+                        
+                        <div class="text-secondary small d-flex flex-column gap-2 pt-1">
+                            <div class="d-flex align-items-start">
+                                <i class="fa-solid fa-location-dot text-muted me-2 mt-1" style="width: 14px; flex-shrink: 0;"></i>
+                                <span>{{ booking.hotel.address }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fa-solid fa-envelope text-muted me-2" style="width: 14px; flex-shrink: 0;"></i>
+                                <span class="text-truncate">{{ booking.hotel.email }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fa-solid fa-phone text-muted me-2" style="width: 14px; flex-shrink: 0;"></i>
+                                <span>{{ booking.hotel.mobile }}</span>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Card Panel Segment: Pinned Allocated Accommodation Distribution Nodes -->
+                    <div class="detail-card shadow-sm">
+                        <h3 class="h6 fw-bold text-dark mb-3 pb-2 border-bottom d-flex align-items-center justify-content-between">
+                            <span class="d-flex align-items-center gap-2"><i class="fa-solid fa-door-open text-muted"></i>Allocated Units</span>
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border font-monospace px-2">{{ booking.room.all.count }}</span>
+                        </h3>
+                        
+                        <div class="d-flex flex-column gap-3 pt-1">
+                            {% for r in booking.room.all %}
+                            <div class="p-3 bg-light border rounded-3 position-relative">
+                                <h4 class="h6 fw-bold text-dark mb-2 d-flex justify-content-between align-items-center">
+                                    <span>{{ r.room_type.type }}</span>
+                                    <span class="badge bg-white text-dark border font-monospace font-weight-normal" style="font-size: 0.7rem;">UNIT REF: {{ r.room_number }}</span>
+                                </h4>
+                                <div class="d-flex justify-content-between align-items-center text-muted small">
+                                    <span>Base Rate Tier Charge</span>
+                                    <span class="fw-semibold text-dark">${{ r.room_type.price }} <small class="text-muted fw-normal">/ night</small></span>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p class="text-muted small text-center my-2">No physical inventory assets parsed to this data token instance matrix.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
 
+                </div>
+            </div>
 
+        </div>
+    </main>
 
+    <!-- Framework Runtime Dependencies Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
-
-
-
-
-
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
-
-
+    <!-- Base Layout Responsive Side Panel Drawer Interactivity Handler -->
     <script>
-        document.addEventListener("DOMContentLoaded", function(event) {
-   
-   const showNavbar = (toggleId, navId, bodyId, headerId) =>{
-   const toggle = document.getElementById(toggleId),
-   nav = document.getElementById(navId),
-   bodypd = document.getElementById(bodyId),
-   headerpd = document.getElementById(headerId)
-   
-   // Validate that all variables exist
-   if(toggle && nav && bodypd && headerpd){
-   toggle.addEventListener('click', ()=>{
-   // show navbar
-   nav.classList.toggle('show')
-   // change icon
-   toggle.classList.toggle('bx-x')
-   // add padding to body
-   bodypd.classList.toggle('body-pd')
-   // add padding to header
-   headerpd.classList.toggle('body-pd')
-   })
-   }
-   }
-   
-   showNavbar('header-toggle','nav-bar','body-pd','header')
-   
-   /*===== LINK ACTIVE =====*/
-   const linkColor = document.querySelectorAll('.nav_link')
-   
-   function colorLink(){
-   if(linkColor){
-   linkColor.forEach(l=> l.classList.remove('active'))
-   this.classList.add('active')
-   }
-   }
-   linkColor.forEach(l=> l.addEventListener('click', colorLink))
-   
-    // Your code to run since DOM is loaded and ready
-   });
+        document.addEventListener("DOMContentLoaded", function() {
+            const showNavbar = (toggleId, navId, bodyId, headerId) => {
+                const toggle = document.getElementById(toggleId),
+                      nav = document.getElementById(navId),
+                      bodypd = document.getElementById(bodyId),
+                      headerpd = document.getElementById(headerId)
+                
+                if (toggle && nav && bodypd && headerpd) {
+                    toggle.addEventListener('click', () => {
+                        nav.classList.toggle('show');
+                        toggle.classList.toggle('bx-x');
+                        bodypd.classList.toggle('body-pd');
+                        headerpd.classList.toggle('body-pd');
+                    });
+                }
+            }
+            
+            showNavbar('header-toggle', 'nav-bar', 'body-pd', 'header');
+        });
     </script>
-
 </body>
 </html>

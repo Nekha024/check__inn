@@ -13,11 +13,13 @@ from django.http import JsonResponse
 def dashboard(request):
     bookings = Booking.objects.filter(user=request.user,payment_status="Paid")
     total_spent = Booking.objects.filter(user=request.user,payment_status='Paid').aggregate(amount=models.Sum("total"))
+    profile = Profile.objects.get(user=request.user)
     
 
     context={
         'bookings':bookings,
-        'total_spent': total_spent
+        'total_spent': total_spent,
+        'profile':profile
     }
 
     return render(request, 'user_dashboard/dashboard.html',context)
@@ -26,8 +28,11 @@ def dashboard(request):
 @login_required
 def bookings(request):
     bookings= Booking.objects.filter(user=request.user,payment_status="Paid")
+    profile = Profile.objects.get(user=request.user)
+
     context={
-        'bookings':bookings
+        'bookings':bookings,
+        'profile':profile
     }
     return render(request,"user_dashboard/bookings.html",context)
 
@@ -37,8 +42,10 @@ def bookings(request):
 @login_required
 def booking_detail(request,booking_id):
     booking= Booking.objects.get(booking_id=booking_id, user=request.user,payment_status="Paid")
+    profile=Profile.objects.get(user=request.user)
     context={
-        'booking':booking
+        'booking':booking,
+        'profile':profile
     }
     return render(request,"user_dashboard/booking_detail.html",context)
     
@@ -47,9 +54,12 @@ def booking_detail(request,booking_id):
 @login_required
 def notifications(request):
     notifications =Notification.objects.filter(user=request.user,seen=False)
+    profile = Profile.objects.get(user=request.user)
+
 
     context = {
-        'notifications':notifications
+        'notifications':notifications,
+        'profile':profile
     }
     return render(request,"user_dashboard/notification.html",context)
     
@@ -66,12 +76,15 @@ def notification_mark_as_seen(request, id):
 def wallet(request):
     bookings = Booking.objects.filter(user=request.user,payment_status="Paid")
     total_spent = Booking.objects.filter(user=request.user,payment_status='Paid').aggregate(amount=models.Sum("total"))
-    wallet_balance = request.user.profile.wallet
+    wallet_balance = Profile.objects.get(user=request.user).wallet
+    profile = Profile.objects.get(user=request.user)
+
 
     context={
         'bookings':bookings,
         'total_spent': total_spent,
-        'wallet_balance':wallet_balance
+        'wallet_balance':wallet_balance,
+        'profile':profile
     }
 
     return render(request, 'user_dashboard/wallet.html',context)
@@ -80,8 +93,10 @@ def wallet(request):
 @login_required
 def bookmark(request):
     bookmark = Bookmark.objects.filter(user=request.user)  
+    profile = Profile.objects.get(user=request.user)
+
    
-    return render(request,'user_dashboard/bookmark.html', {'bookmark':bookmark})
+    return render(request,'user_dashboard/bookmark.html', {'bookmark':bookmark,'profile':profile})
 
 
 def delete_bookmark(request,bid):
@@ -140,4 +155,8 @@ def profile(request):
 
 @login_required
 def password_changed(request):
-    return render(request,"user_dashboard/change-password.html")
+    profile = Profile.objects.get(user=request.user)
+    context = {
+        "profile": profile
+    }
+    return render(request,"user_dashboard/change-password.html",context)
